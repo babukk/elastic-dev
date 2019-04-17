@@ -32,7 +32,7 @@ if __name__ == '__main__':
             print("Неизвестная опция.\n" + _usage_msg)
 
     if _config_name is None:
-        print("Config-name не определён.\n")
+        print("config-name не определён.\n")
         sys.exit(1)
 
     print("running config:", _config_name)

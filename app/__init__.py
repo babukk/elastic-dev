@@ -11,6 +11,7 @@ from flask_bootstrap import Bootstrap
 
 from config import app_config
 
+
 app = Flask(__name__, instance_relative_config=True)
 
 app.config.from_object(app_config['development'])
@@ -50,8 +51,8 @@ def create_app(config_name='development'):
     migrate = Migrate(app, db)
 
     login_manager.init_app(app)
-    login_manager.login_message = "You must be logged in to access this page."
-    login_manager.login_view = "auth.login"
+    login_manager.login_message = "Для получения доступа к этой странице вы должны выполнить вход."
+    login_manager.login_view = "login"
 
     Bootstrap(app)
 

@@ -3,6 +3,7 @@ from sqlalchemy import Table, PrimaryKeyConstraint
 from flask_wtf import Form
 from wtforms import TextField, PasswordField
 from wtforms.validators import InputRequired
+from aprmd5 import password_validate
 
 from . import db, app
 from . import db_es, metadata_es, engine_es, Base_es
@@ -14,7 +15,7 @@ user_role_rel_table    = Table('user_role_rel', metadata_es, autoload=True, auto
 
 
 # --------------------------------------------------------------------------------------------------
-class Roles(db.Model):
+class Roles(db_es.Model):
     __table__ = roles_table
     __bind_key__ = 'ES'
     __mapper_args__ = {
@@ -26,7 +27,7 @@ class Roles(db.Model):
 
 
 # --------------------------------------------------------------------------------------------------
-class UserCompanyRel(db.Model):
+class UserCompanyRel(db_es.Model):
     __table__ = user_company_rel_table
     __bind_key__ = 'ES'
     __mapper_args__ = {
@@ -38,7 +39,7 @@ class UserCompanyRel(db.Model):
 
 
 # --------------------------------------------------------------------------------------------------
-class UserRoleRel(db.Model):
+class UserRoleRel(db_es.Model):
     __table__ = user_role_rel_table
     __bind_key__ = 'ES'
     __mapper_args__ = {
@@ -47,6 +48,55 @@ class UserRoleRel(db.Model):
 
     def  __getitem__(self, item):
         return getattr(self, item)
+
+
+def checkHtpasswdLogin(htpasswd_file, user, passw):
+    try:
+        with open(htpasswd_file) as f:
+            datafile = f.readlines()
+            found = False
+            for line in datafile:
+                line = line.rstrip("\n\r")
+                line = line.rstrip("\n")
+                xuser, xhash = line.split(':')
+                if user == xuser:
+                    if password_validate(passw, xhash):
+                        return True
+            return False
+
+    except Exception as e:
+        print("Error: " + str(e))
+        return False
+
+
+# -------------------------------------------------------------------------------------
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100))
+
+    def __init__(self, username, password):
+        self.username = username
+
+    @staticmethod
+    def try_login(username, password):
+        # print("FLASK_HTPASSWD_PATH = ", app.config['FLASK_HTPASSWD_PATH'])
+        if not checkHtpasswdLogin(app.config['FLASK_HTPASSWD_PATH'], username, password):
+            raise ValueError
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.id
+
+    def get_username(self):
+        return self.username
 
 
 

@@ -8,4 +8,6 @@ cd ${HOME_DIR}
 
 python ./run_app.py --config-name=development --port=15000
 
+# python test_elastic.py
+
 deactivate

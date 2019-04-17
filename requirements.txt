@@ -20,3 +20,6 @@ WTForms
 lxml
 requests
 PyMySQL
+elasticsearch
+git+https://github.com/herzbube/python-aprmd5
+flask_script

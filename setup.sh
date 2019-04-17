@@ -8,7 +8,10 @@ cd ${HOME_DIR}
 . ${HOME_DIR}/.venv3/bin/activate
 # pip install -r requirements.txt
 
-pip install flask-login
+# pip install elasticsearch
+# pip install git+https://github.com/herzbube/python-aprmd5
+
+# pip install flask_script
 
 # python manage.py db init
 # python manage.py db migrate
