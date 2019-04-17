@@ -104,39 +104,3 @@ $(document).ready(function() {
 
 });
 
-// *------------------------------------------------------------------------------------------------------
-
-function saveComment(ip_addr) {
-    if ( $('#comment-textarea').val().trim()=== '') {
-        alert('Требуется ввести текст комментария.');
-        return;
-    }
-
-    $.ajax({
-        url: '/save_comment',
-        type: 'post',
-        dataType: 'json',
-        async: false,
-        data: $('form#save-comment').serialize()
-    })
-    .done(function(data) {
-        $.ajax({
-            url: '/get_comments/' + ip_addr,
-            type: 'get',
-            success: function(data) {
-                $('#comments-content').html(data);
-                $('#comment-textarea').val("");
-            }
-        });
-    })
-    .fail(function(data) {
-        $.ajax({
-            url: '/get_comments/' + ip_addr,
-            type: 'get',
-            success: function(data) {
-                $('#comments-content').html(data);
-                $('#comment-textarea').val("");
-            }
-        });
-    });
-}
