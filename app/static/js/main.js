@@ -1,11 +1,5 @@
 
 $(document).ready(function() {
-    /*
-    $('.selectpicker').selectpicker({
-        // style: 'btn-info',
-        size: 12
-    });
-    */
 
     $("header.navbar-fixed-top").autoHidingNavbar({
         showOnBottom: false
@@ -30,16 +24,43 @@ $(document).ready(function() {
         },
         'buttons': [
             {   extend: 'excelHtml5',
-                title: 'мониторинг',
+                title: 'таблица',
                 text: 'Экспортировать в Excel (.xlsx)'  },
             {   extend: 'print',
-                title: 'Распечатать',
-                text: 'Распечатать'  }
+                title: '',
+                text: 'распечатать'  },
+            {   text: 'Добавить',
+                    action: function (e, dt, node, config) {
+                        $('#myModal').modal({ "show": true });
+                        $('#save-btn').click(function(e) {
+                             var me = $(this);
+                             e.preventDefault();
+
+                            if (me.data('requestRunning')) {
+                                return;
+                            }
+
+                            me.data('requestRunning', true);
+                            var form = $("#add-new-item");
+
+                            $.ajax({
+                                type: "POST",
+                                url: form.attr("action"),
+                                data: form.serialize(),
+                                success: function(response) {
+                                    console.log(response);
+                                },
+                                complete: function() {
+                                    me.data('requestRunning', false);
+                                }
+                            });
+                        });
+                    } }
         ],
         'columnDefs': [
             { 'targets': "no-sort", orderable: false }     // 'targets' - указывает на имя css-класса для тегов <th> таблицы.
         ],
-        'order': [[ 11, "desc" ]],                          // 'order' - задает номер колонки <th> (нумерация с нуля), по которой делается начальная default-сортировка
+        'order': [[ 0, "desc" ]],                          // 'order' - задает номер колонки <th> (нумерация с нуля), по которой делается начальная default-сортировка
         'language': {
             'url': "https://cdn.datatables.net/plug-ins/1.10.13/i18n/Russian.json",
         }
@@ -47,29 +68,7 @@ $(document).ready(function() {
 
     var table = $('#data-table').DataTable();
 
-    $(".clickable-row").click(function() {
-        $("#data-table tbody tr").removeClass('row_selected');
-        $(this).addClass('row_selected');
 
-        var url = $(this).data("href");
-        var ipaddr = $(this).data("ipaddr");
-        $('#modal-body').load(url, function(result) {
-            $('#myModal').modal({ "show": true });
-            $('#save-comment-btn').click(function() {
-                saveComment(ipaddr);
-            });
-        });
-    });
-
-    $('#myModal').on('hide.bs.modal', function () {
-        $("#data-table tbody tr").removeClass('row_selected');
-        // $.fn.dataTable.tables({visible: true, api: true}).columns.adjust();
-    });
-
-    $('#myModal').on('shown.bs.modal', function () {
-        // waitingDialog.hide();
-        // $.fn.dataTable.tables({visible: true, api: true}).columns.adjust();
-    });
 
     $(window).scroll(function() {
         var scrollh = $(this).scrollTop();
@@ -100,7 +99,6 @@ $(document).ready(function() {
 
     $('#back-to-top').tooltip('show');
 
-    $('.select2picker').select2();
 
 });
 

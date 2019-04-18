@@ -9,8 +9,9 @@ body {
 
 .fu-docs-nav {
 	margin-bottom: 0;
-	background-color: #293f54;
+	background-color: #6a8095;
 	border-bottom: 0;
+	height: 51px;
 }
 .fu-home-nav .fu-nav-b {
 	display: none;

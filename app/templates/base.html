@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet"> -->
 
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
-    <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">{% block commoncss %}{% endblock %}
+    <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+
+    {% block commoncss %}{% endblock %}
+
+    <!--[if lt IE 9]>
+       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
     <style>
     .navbar {
@@ -22,71 +28,64 @@
         background: rgba(40, 90, 100, 0.7);  /* NON-IE */
         /* height: 30px; */
     }
-
     </style>
-
-    <!--[if lt IE 9]>
-          <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
-          <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-          <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
 </head>
 
 <body>
     <header class="navbar navbar-fixed-top fu-docs-nav" role="navigation">
-        <div class="container">
+        <div class="container" style="width: auto;">
             {% block header_block %}
+            <nav class="navbar  navbar-static-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
 
-        <div class="navbar-header">
-            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".fu-navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            </button>
-            <a href="/" class="navbar-brand">Проект</a>
-        </div>
-        <nav class="collapse navbar-collapse fu-navbar-collapse" role="navigation" style="z-index: 1;">
-            <ul class="nav navbar-nav">
-               <li><a href="#"></a></li>
-            </ul>
+                        <a class="navbar-brand" href="/">Проект</a>
+                    </div>
 
-            <ul class="nav navbar-nav navbar-right" style="z-index: 999;">
-                  <li class="dropdown" style="z-index: 999;">
-                     {% if current_user.is_authenticated %}
-                     <a href="/logout">{{ current_user.username }} - Выйти &rarr;</a>
-                     {% else %}
-                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Вход <b class="caret"></b></a>
-                     {% endif %}
-                     <ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
-                        <li>
-                           <div class="row" style="z-index: 999;">
-                              <div class="col-md-12">
-                                 <form class="form" role="form" method="post" action="/login" accept-charset="UTF-8" id="login-nav">
-                                    {{ form.csrf_token }}
-                                    <div class="form-group">
-                                       <label class="sr-only" for="input-login">Логин</label>
-                                       <!-- <input type="text" class="form-control" id="input-login" placeholder="Логин" required> -->
-                                       {{ form.username.label }}{{ form.username() }}
+                    <div id="navbar" class="navbar-collapse collapse">
+                        {% if current_user.is_authenticated %}
+                        <ul class="nav navbar-nav">
+                            <li class=""><a href="/companies" class="">Компании</a></li>
+                            <li class=""><a href="/users" class="">Пользователи</a></li>
+                        </ul>
+                        {% endif %}
+
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown">
+                                {% if current_user.is_authenticated %}
+                                    <a href="/logout"><b>Выйти</b></a>
+                                {% else %}
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Вход<span class="caret"></span></a>
+                                {% endif %}
+                                <div class="dropdown-menu" id="formLogin">
+                                    <div class="row">
+                                        <div class="container-fluid">
+                                            <form class="" method="post" action="/login">
+                                                {{ form.csrf_token }}
+                                                <div class="form-group">
+                                                    {{ form.username.label }}{{ form.username() }}
+                                                </div>
+                                                <div class="form-group">
+                                                    {{ form.password.label }}{{ form.password() }}
+                                                    <br class="">
+                                                </div>
+                                                <button type="submit" id="btnLogin" class="btn btn-success btn-sm">Вход</button>
+                                            </form>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                       <label class="sr-only" for="input-password">Пароль</label>
-                                       <!-- <input type="password" class="form-control" id="input-password" placeholder="Пароль" required> -->
-                                       {{ form.password.label }}{{ form.password() }}
-                                    </div>
-
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-success btn-block">Войти &rarr;</button>
-                                    </div>
-                                 </form>
-                              </div>
-                           </div>
-                        </li>
-                     </ul>
-                  </li>
-            </ul>
-        </nav>
-
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--/.navbar-collapse -->
+                </div>
+            </nav>
             {% endblock %}
         </div>
     </header>
@@ -104,9 +103,14 @@
     </div>
 
     {% block main_block %}{% endblock %}
-
+<!--
+    <script type='text/javascript' src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type='text/javascript' src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+-->
     <script src="//code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
     {% block scripts %}
     {% endblock %}
     {% block custom_scripts %}
