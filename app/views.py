@@ -23,6 +23,22 @@ def getRolesList():
 
 
 # --------------------------------------------------------------------------------------------------
+def getUsersByCompanyID(_id):
+
+     query = db_es.session.query(UserCompanyRel)
+     usr_list = query.filter(UserCompanyRel.company_id == _id).all()
+
+     users_list = []
+
+     for usr in usr_list:
+         print("------------>>> user_id = ", usr.user_id)
+         user_rec = elastic.getUser(usr.user_id)
+         users_list.append(user_rec)
+
+     return users_list
+
+
+# --------------------------------------------------------------------------------------------------
 def saveUser2DB(_new_user_id, _role_id, _company_id):
     """ Сохранение отношений user - role, user - company в БД """
 
@@ -47,6 +63,28 @@ def main_index():
     return render_template(
         'index.html',
         form=form,
+    )
+
+# ------------------------------------------------------------------------------- /company_users ---
+@app.route('/company_users/<string:_id>')
+@login_required
+def company_users_index(_id):
+
+    form = LoginForm(request.form)
+
+    users_list = []
+    users_list = getUsersByCompanyID(_id)
+
+    roles_list = getRolesList()
+    print("------------------------>> roles_list:")
+    print(roles_list)
+
+    return render_template(
+        'company_users.html',
+        users_list=users_list,
+        roles_list=roles_list,
+        form=form,
+        page_size=20,
     )
 
 

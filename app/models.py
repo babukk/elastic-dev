@@ -76,6 +76,19 @@ class UserRoleRel(db_es.Model):
 
 
 # -------------------------------------------------------------------------------------
+class ElasticUser(db.Model):
+
+    __tablename__ = "elastic_users"
+
+    id = db.Column(db.Integer, primary_key=True)
+    _id = db.Column(db.String(40))
+    password = db.Column(db.String(40))
+
+    def __repr__(self):
+        return '<ElasticUser: {}>'.format(self._id)
+
+
+# -------------------------------------------------------------------------------------
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100))
@@ -85,7 +98,6 @@ class User(db.Model):
 
     @staticmethod
     def try_login(username, password):
-        # print("FLASK_HTPASSWD_PATH = ", app.config['FLASK_HTPASSWD_PATH'])
         if not checkHtpasswdLogin(app.config['FLASK_HTPASSWD_PATH'], username, password):
             raise ValueError
 

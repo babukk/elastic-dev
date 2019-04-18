@@ -10,13 +10,13 @@ HOME_DIR="/home/elastic/_project/es"  (для примера)
 $ cd ${HOME_DIR}
 $ virtualenv -p `which python3` .venv3
 
-Акивируем вирт.среду:
+Активируем вирт.среду:
 $ . ${HOME_DIR}/.venv3/bin/activate
 
 Устанавливаем необходимые пакеты:
 (.venv3) $ pip install -r requirements.txt
 
-Инициализируем БД для авторизации пользователей (sqlite3):
+Инициализируем БД для авторизации пользователей (sqlite3 в данном случае):
 (.venv3) $ python manage.py db init
 (.venv3) $ python manage.py db migrate
 (.venv3) $ python manage.py db upgrade

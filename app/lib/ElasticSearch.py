@@ -23,6 +23,24 @@ class ElasticSearch(object):
 
 
     # ----------------------------------------------------------------------------------------------
+    def getUser(self, _id):
+        """ Получаем пользователя по его _id """
+
+        user_info = None
+
+        try:
+            user_info = self.es.get(index='users', id=_id)
+        except elasticsearch.exceptions.ConnectionError as e:
+            print("ElasticSearch::getUser: Connection error: " + str(e))
+        except elasticsearch.exceptions.NotFoundError as e:
+            print("ElasticSearch::getUser: Not found error: " + str(e))
+
+        # print("----------------------------->> ElasticSearch::getUser")
+        # pprint(user_info)
+
+        return {'id': user_info['_id'], 'source': user_info['_source'], }
+
+    # ----------------------------------------------------------------------------------------------
     def getUsers(self, _size=10000):
         """ Получаем список пользователей """
         users_list = []
