@@ -31,7 +31,7 @@ def getUsersByCompanyID(_id):
      users_list = []
 
      for usr in usr_list:
-         print("------------>>> user_id = ", usr.user_id)
+         # print("------------>>> user_id = ", usr.user_id)
          user_rec = elastic.getUser(usr.user_id)
          users_list.append(user_rec)
 

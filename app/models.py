@@ -103,11 +103,11 @@ class User(db.Model):
 
 
     def is_authenticated(self):
-        print("----> is_authenticated -----------------------")
+        # print("----> is_authenticated -----------------------")
         return True
 
     def is_active(self):
-        print("----> is_active -----------------------")
+        # print("----> is_active -----------------------")
         return True
 
     """
@@ -116,7 +116,7 @@ class User(db.Model):
     """
 
     def get_id(self):
-        print("----> get_id -----------------------")
+        # print("----> get_id -----------------------")
         return self.id
 
     """

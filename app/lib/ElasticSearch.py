@@ -35,9 +35,6 @@ class ElasticSearch(object):
         except elasticsearch.exceptions.NotFoundError as e:
             print("ElasticSearch::getUser: Not found error: " + str(e))
 
-        # print("----------------------------->> ElasticSearch::getUser")
-        # pprint(user_info)
-
         return {'id': user_info['_id'], 'source': user_info['_source'], }
 
     # ----------------------------------------------------------------------------------------------
@@ -52,9 +49,6 @@ class ElasticSearch(object):
             print("ElasticSearch::getUsers: Connection error: " + str(e))
         except elasticsearch.exceptions.NotFoundError as e:
             print("ElasticSearch::getUsers: Not found error: " + str(e))
-
-        # pprint(users_list)
-        # pprint(users_list['hits']['hits'])
 
         for item in users_list['hits']['hits']:
             try:  users_arr.append({'id': item['_id'], 'source': item['_source'], })
@@ -76,9 +70,6 @@ class ElasticSearch(object):
             print("ElasticSearch::getCompanies: Connection error: " + str(e))
         except elasticsearch.exceptions.NotFoundError as e:
             print("ElasticSearch::getCompanies: Not found error: " + str(e))
-
-        pprint(companies_list)
-        # pprint(companies_list['hits']['hits'])
 
         for item in companies_list['hits']['hits']:
             try:  companies_arr.append({'id': item['_id'], 'source': item['_source'], })
@@ -119,8 +110,6 @@ class ElasticSearch(object):
             print("ElasticSearch::addUser: Connection error: " + str(e))
         except elasticsearch.exceptions.NotFoundError as e:
             print("ElasticSearch::addUser: Not found error: " + str(e))
-
-        # print("addUser: new_user = ", new_user)
 
         return new_user['_id']
 
