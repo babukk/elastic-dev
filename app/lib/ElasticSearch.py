@@ -102,7 +102,7 @@ class ElasticSearch(object):
         except elasticsearch.exceptions.NotFoundError as e:
             print("ElasticSearch::addUser: Not found error: " + str(e))
 
-        print("addUser: new_user = ", new_user)
+        # print("addUser: new_user = ", new_user)
 
         return new_user['_id']
 
