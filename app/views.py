@@ -54,6 +54,8 @@ def saveUser2DB(_new_user_id, _role_id, _company_id):
         print("saveUser2DB: DB error: " + str(e))
 
 
+""" Routing для запросов """
+
 # -------------------------------------------------------------------------------------- / ---------
 @app.route('/')
 def main_index():
@@ -69,6 +71,7 @@ def main_index():
 @app.route('/company_users/<string:_id>')
 @login_required
 def company_users_index(_id):
+    """ Получаем и готовим к показу список пользователей по ID компании """
 
     form = LoginForm(request.form)
 
@@ -76,8 +79,6 @@ def company_users_index(_id):
     users_list = getUsersByCompanyID(_id)
 
     roles_list = getRolesList()
-    print("------------------------>> roles_list:")
-    print(roles_list)
 
     return render_template(
         'company_users.html',
@@ -85,6 +86,7 @@ def company_users_index(_id):
         roles_list=roles_list,
         form=form,
         page_size=20,
+        company_id=_id,
     )
 
 
@@ -98,8 +100,6 @@ def users_index():
     users_list = elastic.getUsers()
     companies_list = elastic.getCompanies()
     roles_list = getRolesList()
-    print("------------------------>> roles_list:")
-    print(roles_list)
 
     return render_template(
         'users.html',
@@ -119,7 +119,6 @@ def companies_index():
     form = LoginForm(request.form)
 
     companies_list = elastic.getCompanies()
-    # print(companies_list)
 
     return render_template(
         'companies.html',

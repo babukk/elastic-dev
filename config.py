@@ -21,8 +21,8 @@ class ProductionConfig(Config):
     Production configurations
     """
 
-    DEBUG = True
-    SQLALCHEMY_ECHO = True
+    DEBUG = False
+    SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 app_config = {

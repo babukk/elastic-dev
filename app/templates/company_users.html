@@ -97,14 +97,7 @@
 
                 <div class="modal-body" id="modal-body">
                     <form action="/add_user" id="add-new-item" method="post">
-                        <div class="form-group">
-                            <label for="fullname">Компания</label>
-                            <select name="company_id">
-                                {% for row in companies_list %}
-                                <option value="{{ row.id }}">{{ row.source.name }}
-                                {% endfor %}
-                            </select>
-                        </div>
+                        <input name="company_id" type="hidden" value="{{ company_id }}" />
 
                         <div class="form-group">
                             <label for="fullname">Роль</label>
