@@ -121,7 +121,7 @@
 
                         <div class="form-group">
                             <label for="passwd">Пароль</label>
-                            <input name="passwd" type="text" class="form-control" id="passwd" placeholder="Введите пароль">
+                            <input name="passwd" type="text" class="form-control" id="passwd" placeholder="Введите пароль"><button id="genpass-btn">&uarr;&uarr;сгенерировать&uarr;&uarr;</button>
                         </div>
 
                         <div class="form-group">
@@ -183,10 +183,11 @@
 {% endblock %}
 
 {% block custom_scripts %}
-   <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.bootstrap-autohidingnavbar.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.bootstrap-autohidingnavbar.min.js') }}"></script>
 {{ super() }}
-   <script>
-       var DATATABLE_PAGE_SIZE = {{ page_size }};
-   </script>
-   <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        var DATATABLE_PAGE_SIZE = {{ page_size }};
+    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-password-generator-plugin.js') }}"></script>
 {% endblock %}

@@ -31,10 +31,12 @@ $(document).ready(function() {
                 text: 'распечатать'  },
             {   text: 'Добавить',
                     action: function (e, dt, node, config) {
+                         $('#passwd').val('');
                         $('#myModal').modal({ "show": true });
+
                         $('#save-btn').click(function(e) {
-                             var me = $(this);
-                             e.preventDefault();
+                            var me = $(this);
+                            e.preventDefault();
 
                             if (me.data('requestRunning')) {
                                 return;
@@ -105,5 +107,16 @@ $(document).ready(function() {
         return false;
     });
 
-    $('#back-to-top').tooltip('show');
+    // $('#back-to-top').tooltip('show');
+
+    // кнопка генерирования пароля
+    $('#genpass-btn').click(
+        function(e) {
+            e.preventDefault();
+            var password = $.passGen();
+            $('#passwd').val(password);
+            return;
+        }
+    );
+
 });
