@@ -31,4 +31,19 @@ $ htpasswd -c /secret/.htpasswd root
 ./run_debug.sh
 
 
+Для запуска в production рекомендуется связка nginx + uwsgi-emperor:
+sudo apt install nginx uwsgi-emperor uwsgi-plugin-pythoh
+
+Пример (в стиле Debian/Ubintu) ini-файла для uwsgi-emperor:
+./deploy/etc/uwsgi-emperor/vassals/es.ini
+
+Пример (в стиле Debian/Ubintu) conf-файла для nginx:
+./deploy/etc/nginx/sites-available/es.conf
+и symbolic-линк:
+./deploy/etc/nginx/sites-enable/es.conf -> ../sites-available/es.conf
+
+systemctl restart uwsgi-emperor
+systemctl restart nginx
+
+
 ```
