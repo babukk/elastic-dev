@@ -6,9 +6,10 @@ from sqlalchemy import exc
 from aprmd5 import password_validate
 import json
 from pprint import pprint
+import hashlib
 
 from . import app, db, db_es, login_manager
-from . models import User, LoginForm, UserCompanyRel, UserRoleRel, Roles
+from . models import User, LoginForm, UserCompanyRel, UserRoleRel, Roles, ElasticUser
 from . lib import ElasticSearch
 
 elastic = ElasticSearch.ElasticSearch(host=app.config['ELASTIC_HOST'], port=app.config['ELASTIC_PORT'])
@@ -16,30 +17,43 @@ elastic = ElasticSearch.ElasticSearch(host=app.config['ELASTIC_HOST'], port=app.
 
 # --------------------------------------------------------------------------------------------------
 def getRolesList():
-     query = db_es.session.query(Roles)
-     result = query.filter(Roles.id != 0).order_by(Roles.id).all()
+    query = db_es.session.query(Roles)
+    result = []
+    try:
+        result = query.filter(Roles.id != 0).order_by(Roles.id).all()
+    except sqlalchemy.exc.OperationalError as e:
+        print("getRolesList: sql error: ", strt(e))
+    except Exception as e:
+        print("getRolesList: unexpected sql error: ", strt(e))
 
-     return result
+    return result
 
 
 # --------------------------------------------------------------------------------------------------
 def getUsersByCompanyID(_id):
 
-     query = db_es.session.query(UserCompanyRel)
-     usr_list = query.filter(UserCompanyRel.company_id == _id).all()
+    query = db_es.session.query(UserCompanyRel)
+    try:
+        usr_list = query.filter(UserCompanyRel.company_id == _id).all()
+    except sqlalchemy.exc.OperationalError as e:
+        print("getRolesList: sql error: ", strt(e))
+        return []
+    except Exception as e:
+        print("getRolesList: unexpected sql error: ", strt(e))
+        return []
 
-     users_list = []
+    users_list = []
 
-     for usr in usr_list:
-         # print("------------>>> user_id = ", usr.user_id)
-         user_rec = elastic.getUser(usr.user_id)
-         users_list.append(user_rec)
+    for usr in usr_list:
+        # print("------------>>> user_id = ", usr.user_id)
+        user_rec = elastic.getUser(usr.user_id)
+        users_list.append(user_rec)
 
-     return users_list
+    return users_list
 
 
 # --------------------------------------------------------------------------------------------------
-def saveUser2DB(_new_user_id, _role_id, _company_id):
+def saveUser2DB(_new_user_id, _role_id, _company_id, _plain_passwd):
     """ Сохранение отношений user - role, user - company в БД """
 
     try:
@@ -48,6 +62,10 @@ def saveUser2DB(_new_user_id, _role_id, _company_id):
         new_user_role_rel = UserRoleRel(user_id=_new_user_id, role_id=_role_id)
         db_es.session.add(new_user_role_rel)
         db_es.session.commit()
+
+        new_user_pass = ElasticUser(_id=_new_user_id, password=_plain_passwd)
+        db.session.add(new_user_pass)
+        db.session.commit()
 
     except exc.SQLAlchemyError as e:
         db_es.session.rollback()
@@ -159,13 +177,15 @@ def add_user():
     avatar = request.form['avatar']
     passwd = request.form['passwd']
 
+    plain_passwd = passwd
+    passwd = hashlib.md5("passwd".encode('utf-8')).hexdigest()
+
     new_user_id = elastic.addUser(company_id=company_id, fullname=fullname, login=login_name, passwd=passwd,
                                   email=email, phone=phone, position=position, avatar=avatar, description=description)
 
-    saveUser2DB(new_user_id, role_id, company_id)
+    saveUser2DB(new_user_id, role_id, company_id, plain_passwd)
 
     return json.dumps({'status': 'OK', })
-
 
 
 # ------------------------------------------------------------------------------------ /login ------
@@ -188,7 +208,13 @@ def login():
             # return render_template('index.html', form=form)
             return redirect("/")
 
-        user = User.query.filter_by(username=username).first()
+        try:
+            user = User.query.filter_by(username=username).first()
+        except sqlalchemy.exc.OperationalError as e:
+            print("login: sql error: ", strt(e))
+        except Exception as e:
+            print("login: unexpected sql error: ", strt(e))
+
 
         if not user:
             user = User(username, password)
