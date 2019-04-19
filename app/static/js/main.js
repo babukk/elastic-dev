@@ -49,6 +49,14 @@ $(document).ready(function() {
                                 data: form.serialize(),
                                 success: function(response) {
                                     console.log(response);
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 1000);
+                                },
+                                error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                                    console.log(errorThrown);
+                                    alert("Status: " + textStatus);
+                                    alert("Error: " + errorThrown); 
                                 },
                                 complete: function() {
                                     me.data('requestRunning', false);
@@ -98,7 +106,4 @@ $(document).ready(function() {
     });
 
     $('#back-to-top').tooltip('show');
-
-
 });
-
