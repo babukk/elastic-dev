@@ -178,7 +178,7 @@ def add_user():
     passwd = request.form['passwd']
 
     plain_passwd = passwd
-    passwd = hashlib.md5("passwd".encode('utf-8')).hexdigest()
+    passwd = hashlib.md5(passwd.encode('utf-8')).hexdigest()
 
     new_user_id = elastic.addUser(company_id=company_id, fullname=fullname, login=login_name, passwd=passwd,
                                   email=email, phone=phone, position=position, avatar=avatar, description=description)
