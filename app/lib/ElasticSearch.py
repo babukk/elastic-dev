@@ -35,7 +35,11 @@ class ElasticSearch(object):
         except elasticsearch.exceptions.NotFoundError as e:
             print("ElasticSearch::getUser: Not found error: " + str(e))
 
-        return {'id': user_info['_id'], 'source': user_info['_source'], }
+        try:
+            return {'id': user_info['_id'], 'source': user_info['_source'], }
+        except TypeError as e:
+            return {'id': None, 'source': None, }
+
 
     # ----------------------------------------------------------------------------------------------
     def getUsers(self, _size=10000):
