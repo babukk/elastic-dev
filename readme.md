@@ -27,7 +27,7 @@ $ htpasswd -c /secret/.htpasswd root
 Параметры подключения БД mysql, ElasticSearch и т.п.) здесь:
 ./instance/config.py
 
-Запуск в debug-mode:
+Запуск в debug-mode (не рекомендуется в production):
 ./run_debug.sh
 
 
@@ -42,6 +42,9 @@ sudo apt install nginx uwsgi-emperor uwsgi-plugin-pythoh
 и symbolic-линк:
 ./deploy/etc/nginx/sites-enable/es.conf -> ../sites-available/es.conf
 
+Файлы конфигов приведены для примера - потребуется заменить пути, адреса, порты на реальные.
+
+Для перезапуска:
 systemctl restart uwsgi-emperor
 systemctl restart nginx
 
