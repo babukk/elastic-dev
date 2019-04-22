@@ -72,7 +72,7 @@
     <tbody>
 
 {% for row in users_list %}
-        <tr>
+        <tr class="clickable-row" data-href="/user_detail/{{ row.id }}" data-id="{{ row.id }}" style="cursor: pointer;">
         <td>{{ row.id }}</td>
         <td>{{ row.source.fullname }}</td>
         <td>{{ row.source.login }}</td>
@@ -159,6 +159,25 @@
             </div>
         </div>
     </div>
+
+
+    <div id="detailModal" class="modal fade modal-wide" role="dialog" tabindex="-1" data-backdrop="false"  >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" id="close-modal-btn" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Информация о пользователе</h4>
+                </div>
+
+                <div class="modal-body" id="modal-detail-body"></div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 {% endblock %}
 

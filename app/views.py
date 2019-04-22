@@ -3,6 +3,7 @@ from flask import render_template, request, flash, redirect, url_for
 from flask_login import current_user, login_user, logout_user, login_required
 from sqlalchemy import func
 from sqlalchemy import exc
+# import sqlalchemy
 from aprmd5 import password_validate
 import json
 from pprint import pprint
@@ -21,10 +22,10 @@ def getRolesList():
     result = []
     try:
         result = query.filter(Roles.id != 0).order_by(Roles.id).all()
-    except sqlalchemy.exc.OperationalError as e:
-        print("getRolesList: sql error: ", strt(e))
+    except exc.OperationalError as e:
+        print("getRolesList: sql error: ", str(e))
     except Exception as e:
-        print("getRolesList: unexpected sql error: ", strt(e))
+        print("getRolesList: unexpected sql error: ", str(e))
 
     return result
 
@@ -35,11 +36,11 @@ def getUsersByCompanyID(_id):
     query = db_es.session.query(UserCompanyRel)
     try:
         usr_list = query.filter(UserCompanyRel.company_id == _id).all()
-    except sqlalchemy.exc.OperationalError as e:
-        print("getRolesList: sql error: ", strt(e))
+    except exc.OperationalError as e:
+        print("getUsersByCompanyID: sql error: ", str(e))
         return []
     except Exception as e:
-        print("getRolesList: unexpected sql error: ", strt(e))
+        print("getUsersByCompanyID: unexpected sql error: ", str(e))
         return []
 
     users_list = []
@@ -50,6 +51,24 @@ def getUsersByCompanyID(_id):
         users_list.append(user_rec)
 
     return users_list
+
+
+# --------------------------------------------------------------------------------------------------
+def getCompanyByUserID(_id):
+
+    query = db_es.session.query(UserCompanyRel)
+    try:
+        comp_info = query.filter(UserCompanyRel.user_id == _id).first()
+    except exc.OperationalError as e:
+        print("getCompanyByUserID: sql error: ", str(e))
+        return []
+    except Exception as e:
+        print("getCompanyByUserID: unexpected sql error: ", str(e))
+        return []
+
+    comp_rec = elastic.getCompany(comp_info.company_id)
+
+    return comp_rec
 
 
 # --------------------------------------------------------------------------------------------------
@@ -84,6 +103,51 @@ def main_index():
         'index.html',
         form=form,
     )
+
+
+# ------------------------------------------------------------------------------- /company_users ---
+@app.route('/user_detail/<string:_id>')
+@login_required
+def user_detail_index(_id):
+    """ Получаем и готовим к показу (в модальном окне) пользователя по ID  """
+
+    form = LoginForm(request.form)
+
+    user_rec = elastic.getUser(_id)
+    query = db.session.query(ElasticUser)
+    plain_password = ''
+
+    company_rec = getCompanyByUserID(_id)
+    print("user_detail_index: company_rec = ", company_rec)
+    company_name = ''
+    try:
+        company_name = company_rec['source']['name']
+    except:
+        pass
+
+    try:
+        result = query.filter(ElasticUser._id == _id).first()
+        plain_password = result.password
+    except exc.OperationalError as e:
+        print("user_detail_index: sql error: ", str(e))
+    except Exception as e:
+        print("user_detail_index: unexpected sql error: ", str(e))
+
+    user_data = {
+        'id': user_rec['id'],
+        'name': user_rec['source']['fullname'],
+        'email': user_rec['source']['email'],
+        'login': user_rec['source']['login'],
+        'password': plain_password,
+        'company_name': company_name,
+    }
+
+    return render_template(
+        'user_details.html',
+        user=user_data,
+        form=form,
+    )
+
 
 # ------------------------------------------------------------------------------- /company_users ---
 @app.route('/company_users/<string:_id>')
@@ -229,10 +293,10 @@ def login():
 
         try:
             user = User.query.filter_by(username=username).first()
-        except sqlalchemy.exc.OperationalError as e:
-            print("login: sql error: ", strt(e))
+        except exc.OperationalError as e:
+            print("login: sql error: ", str(e))
         except Exception as e:
-            print("login: unexpected sql error: ", strt(e))
+            print("login: unexpected sql error: ", str(e))
 
 
         if not user:

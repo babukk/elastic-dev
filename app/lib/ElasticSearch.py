@@ -43,6 +43,26 @@ class ElasticSearch(object):
 
 
     # ----------------------------------------------------------------------------------------------
+    def getCompany(self, _id):
+        """ Получаем компании по ее _id """
+
+        comp_info = None
+
+        try:
+            comp_info = self.es.get(index='companies', id=_id)
+        except elasticsearch.exceptions.ConnectionError as e:
+            print("ElasticSearch::getCompany: Connection error: " + str(e))
+        except elasticsearch.exceptions.NotFoundError as e:
+            print("ElasticSearch::getCompany: Not found error: " + str(e))
+
+        try:
+            return {'id': comp_info['_id'], 'source': comp_info['_source'], }
+        except TypeError as e:
+            print("ElasticSearch::getCompany: Undefined error: " + str(e))
+            return {'id': None, 'source': None, }
+
+
+    # ----------------------------------------------------------------------------------------------
     def checkLoginExists(self, login):
         """ Проверка существования пользователя по логину """
 

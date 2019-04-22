@@ -159,4 +159,15 @@ $(document).ready(function() {
     });
 
 
+    $(".clickable-row").click(function() {
+        $("#data-table tbody tr").removeClass('row_selected');
+        $(this).addClass('row_selected');
+
+        var url = $(this).data("href");
+        $('#modal-detail-body').load(url, function(result) {
+            $('#detailModal').modal({ "show": true });
+        });
+    });
+
+
 });
