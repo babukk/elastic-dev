@@ -1,4 +1,12 @@
 
+//* ----------------------------------------------------------------------
+function is_numeric(str) {
+    // console.log(str);
+    return /^\d+$/.test(str);
+}
+
+
+//* ----------------------------------------------------------------------
 $(document).ready(function() {
 
     $("header.navbar-fixed-top").autoHidingNavbar({
@@ -50,15 +58,15 @@ $(document).ready(function() {
                                 url: form.attr("action"),
                                 data: form.serialize(),
                                 success: function(response) {
-                                    console.log(response);
+                                    // console.log(response);
                                     setTimeout(function() {
                                         location.reload();
                                     }, 1000);
                                 },
                                 error: function(XMLHttpRequest, textStatus, errorThrown) { 
                                     console.log(errorThrown);
-                                    alert("Status: " + textStatus);
-                                    alert("Error: " + errorThrown); 
+                                    // alert("Status: " + textStatus);
+                                    // alert("Error: " + errorThrown); 
                                 },
                                 complete: function() {
                                     me.data('requestRunning', false);
@@ -118,5 +126,37 @@ $(document).ready(function() {
             return;
         }
     );
+
+    $('#login-name').on('blur', function() {
+        $('#save-btn').prop('disabled', true);
+        var login_name = $('#login-name').val();
+        if (login_name == '') {
+            return;
+        }
+        else {
+            if (!is_numeric(login_name)) {
+                alert("Логин должен быть числовым.");
+                return;
+            }
+            else
+                $.ajax({
+                    url: '/check_login_exists',
+                    type: 'post',
+                    data: { 'login_name': login_name },
+                    success: function(response) {
+                        // console.log(response);
+                        json_data = $.parseJSON(response);
+                        // console.log(json_data.status);
+                        if (json_data.status == false)
+                            $('#save-btn').prop('disabled', false);
+                        else {
+                            $('#save-btn').prop('disabled', true);
+                            alert("Пользователь с таким логином уже существует.");
+                        }
+                    }
+                });
+        }
+    });
+
 
 });

@@ -6,16 +6,22 @@ import requests
 
 from elasticsearch import Elasticsearch
 
-es = Elasticsearch([{'host': '172.9.0.10', 'port': 9200}])
+es = Elasticsearch([{'host': '172.9.0.6', 'port': 9200}])
 
 # xx = es.get(index='users', id='ODln6GkBZAe3JCUdtbM2')
 # zz = es.get(index='companies', id='OTlp6GkBZAe3JCUdrLM5')
 
-#xx = es.search(index='users')
+xx = es.search(index='users', body={'query': {'prefix': {'login': 'sadSD'}}})
+print(xx['hits']['hits'])
+
+if xx['hits']['hits']:
+    print("found")
+else:
+    print("not found")
 
 
-xx = es.get(index='users', id='VmrgM2oBoOXmBqtSJB_O')
-print(xx)
+# xx = es.get(index='users', id='VmrgM2oBoOXmBqtSJB_O')
+# print(xx)
 
 # print(zz)
 

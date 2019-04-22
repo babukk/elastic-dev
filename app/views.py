@@ -146,7 +146,18 @@ def companies_index():
     )
 
 
-# -------------------------------------------------------------------------------------- /add_company
+# ----------------------------------------------------------------------- /check_login_exists ---
+@app.route('/check_login_exists', methods=['POST'])
+def check_login_exists():
+
+    login_name = request.form['login_name']
+
+    status = elastic.checkLoginExists(login_name)
+
+    return json.dumps({'status': status, })
+
+
+# ------------------------------------------------------------------------------- /add_company --
 @app.route('/add_company', methods=['POST'])
 def add_company():
 
@@ -161,7 +172,7 @@ def add_company():
     return json.dumps({'status': 'OK', })
 
 
-# -------------------------------------------------------------------------------------- /add_user
+# --------------------------------------------------------------------------------- /add_user ---
 @app.route('/add_user', methods=['POST'])
 def add_user():
 
@@ -177,22 +188,30 @@ def add_user():
     avatar = request.form['avatar']
     passwd = request.form['passwd']
 
+    if not login_name.isdigit():
+        return json.dumps({'status': None, 'message': "Логин должен быть числовым (содержать только цифры).", })
+
+    if elastic.checkLoginExists(login_name):
+        return json.dumps({'status': None, 'message': "Пользователь с таким логином уже существует.", })
+
     plain_passwd = passwd
     passwd = hashlib.md5(passwd.encode('utf-8')).hexdigest()
 
     new_user_id = elastic.addUser(company_id=company_id, fullname=fullname, login=login_name, passwd=passwd,
                                   email=email, phone=phone, position=position, avatar=avatar, description=description)
 
-    saveUser2DB(new_user_id, role_id, company_id, plain_passwd)
-
-    return json.dumps({'status': 'OK', })
+    if new_user_id:
+        saveUser2DB(new_user_id, role_id, company_id, plain_passwd)
+        return json.dumps({'status': 'OK', })
+    else:
+        return json.dumps({'status': None, 'message': "Не удалось создать пользователя.", })
 
 
 # ------------------------------------------------------------------------------------ /login ------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        flash(u"Вы уже вошли на сайт.")
+        flash("Вы уже вошли на сайт.")
         return redirect("/")
 
     form = LoginForm(request.form)

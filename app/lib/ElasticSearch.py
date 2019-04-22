@@ -38,7 +38,31 @@ class ElasticSearch(object):
         try:
             return {'id': user_info['_id'], 'source': user_info['_source'], }
         except TypeError as e:
+            print("ElasticSearch::getUsers: Undefined error: " + str(e))
             return {'id': None, 'source': None, }
+
+
+    # ----------------------------------------------------------------------------------------------
+    def checkLoginExists(self, login):
+        """ Проверка существования пользователя по логину """
+
+        try:
+            result = self.es.search(index='users', body={'query': {'prefix': {'login': login}}})
+        except elasticsearch.exceptions.ConnectionError as e:
+            print("ElasticSearch::checkLoginExists: Connection error: " + str(e))
+        except elasticsearch.exceptions.NotFoundError as e:
+            print("ElasticSearch::checkLoginExists: Not found error: " + str(e))
+
+        try:
+            if result['hits']['hits']:
+                return True
+            else:
+                return False
+        except TypeError as e:
+            print("ElasticSearch::checkLoginExists: Undefined error: " + str(e))
+            return False
+
+        return
 
 
     # ----------------------------------------------------------------------------------------------
@@ -115,7 +139,11 @@ class ElasticSearch(object):
         except elasticsearch.exceptions.NotFoundError as e:
             print("ElasticSearch::addUser: Not found error: " + str(e))
 
-        return new_user['_id']
+        try:
+            return new_user['_id']
+        except TypeError as e:
+            print("ElasticSearch::addUser: Undefined error: " + str(e))
+            return None
 
 
     # ----------------------------------------------------------------------------------------------
