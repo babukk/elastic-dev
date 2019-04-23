@@ -3,3 +3,5 @@ __pycache__/
 *.bak
 .venv3/
 *.db
+*.sock
+*.pid
