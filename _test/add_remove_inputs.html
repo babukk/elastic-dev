@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script    type="text/javascript"    src="//code.jquery.com/jquery-1.9.1.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+</head>
+<body>
+    <input type="text" id="enter_task" placeholder="введите описание" />
+    <input type="submit" id="add" value="добавить" />
+
+    <form action="/get_items.php" id="form1" method="post">
+        <p>
+            <ul id="todo_list"></ul>
+        </p>
+        <input type="submit" id="add" value="отправить" />
+    </form>
+
+<script type="text/javascript">
+    $(window).load(function() {
+
+        function enter_task() {
+            var text = $('#enter_task').val();
+            $('#todo_list').append('<li style="list-style-type: none;"><a hrep="#" class="del-btn" title="удалить"><i class="fa fa-trash" aria-hidden="true"></i></a></span>&nbsp;&nbsp;' +
+                '<input type="hidden" name="item[]" value="' + text + '" />' + text +
+                +'</li>');
+            $('#enter_task').val('');
+        };
+
+        $('#todo_list').on('click', '.del-btn', function() {
+            $(this).parent().remove();
+        });
+
+        $(function() {
+            $('#add').on('click', enter_task);
+        });
+    });
+
+</script>
+</body>
+</html>
