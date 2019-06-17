@@ -9,5 +9,5 @@ SQLALCHEMY_BINDS = {
 
 FLASK_HTPASSWD_PATH = '/home/elastic/_project/es/secret/.htpasswd'
 
-ELASTIC_HOST = "172.9.0.6"
+ELASTIC_HOST = "172.9.0.10"
 ELASTIC_PORT = "9200"
