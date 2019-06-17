@@ -98,10 +98,13 @@ class ElasticSearch(object):
         except elasticsearch.exceptions.NotFoundError as e:
             print("ElasticSearch::getUsers: Not found error: " + str(e))
 
-        for item in users_list['hits']['hits']:
-            try:  users_arr.append({'id': item['_id'], 'source': item['_source'], })
-            except Exception as e:
-                print("ElasticSearch::getUsers: " + str(e))
+        try:
+            for item in users_list['hits']['hits']:
+                try:  users_arr.append({'id': item['_id'], 'source': item['_source'], })
+                except Exception as e:
+                    print("ElasticSearch::getUsers: " + str(e))
+        except Exception as e:
+            print("ElasticSearch::getUsers: " + str(e))
 
         return users_arr
 
@@ -119,10 +122,13 @@ class ElasticSearch(object):
         except elasticsearch.exceptions.NotFoundError as e:
             print("ElasticSearch::getCompanies: Not found error: " + str(e))
 
-        for item in companies_list['hits']['hits']:
-            try:  companies_arr.append({'id': item['_id'], 'source': item['_source'], })
-            except Exception as e:
-                print("ElasticSearch::getCompanies: " + str(e))
+        try:
+            for item in companies_list['hits']['hits']:
+                try:  companies_arr.append({'id': item['_id'], 'source': item['_source'], })
+                except Exception as e:
+                    print("ElasticSearch::getCompanies: " + str(e))
+        except Exception as e:
+             print("ElasticSearch::getCompanies: " + str(e))
 
         return companies_arr
 
